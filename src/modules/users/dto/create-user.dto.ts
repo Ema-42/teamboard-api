@@ -15,8 +15,8 @@ export class CreateUserDto {
     password: string;
 
     @IsString()
-    @IsNotEmpty()
-    estado: string;
+    @IsOptional()
+    estado?: string = 'active';
 
     @IsBoolean()
     @Type(() => Boolean)
@@ -24,6 +24,6 @@ export class CreateUserDto {
     deleted?: boolean;
 
     @IsString()
-    @IsNotEmpty()
-    roleId: string;
+    @IsOptional()
+    roleId?: string;
 }
