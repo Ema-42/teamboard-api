@@ -1,0 +1,99 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String  @id @default(uuid())
+  email    String  @unique
+  name     String
+  password String
+  estado   String? @default("active")
+  deleted  Boolean @default(false)
+  roleId   String?
+  picture  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  role         Role?        @relation(name: "UserRole", fields: [roleId], references: [id])
+  boards       Board[]      @relation(name: "BoardOwner")
+  memberships  Membership[]
+  TasksAsign   Tasks[]
+  TasksCreated Tasks[]      @relation("CreatorTask")
+
+  @@index([deleted])
+}
+
+model Role {
+  id      String  @id @default(uuid())
+  name    String  @unique
+  estado  String
+  deleted Boolean @default(false)
+
+  users User[] @relation(name: "UserRole")
+
+  @@index([deleted])
+}
+
+model Board {
+  id      String       @id @default(uuid())
+  title   String
+  estado  String
+  deleted Boolean      @default(false)
+  ownerId String
+  owner   User         @relation(name: "BoardOwner", fields: [ownerId], references: [id])
+  tasks   Tasks[]
+  members Membership[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([deleted])
+}
+
+model Tasks {
+  id          String    @id @default(uuid())
+  title       String
+  description String?
+  estado      String
+  deleted     Boolean   @default(false)
+  position    Int // Para orden dentro del grupo
+  color       String? // Color de la tarjeta
+  comments    String?
+  dueDate     DateTime?
+  check       Boolean   @default(false)
+
+  board    Board  @relation(fields: [board_id], references: [id])
+  board_id String
+
+  assignedTo   User?   @relation(fields: [assignedToId], references: [id])
+  assignedToId String?
+  created_by   String
+  creator      User    @relation("CreatorTask", fields: [created_by], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([deleted])
+}
+
+model Membership {
+  id      String  @id @default(uuid())
+  user    User    @relation(fields: [userId], references: [id])
+  userId  String
+  board   Board   @relation(fields: [boardId], references: [id])
+  boardId String
+  role    String // Ej: admin, editor, viewer
+  estado  String
+  deleted Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, boardId])
+  @@index([deleted])
+}
