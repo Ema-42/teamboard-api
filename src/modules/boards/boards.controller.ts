@@ -23,6 +23,7 @@ export class BoardsController {
   @UseGuards(JwtAuthGuard)
   @Get('my-boards')
   findUserBoards(@CurrentUser() user: User) {
+    console.log('Authenticated user:', user);
     return this.boardsService.findUserBoards(user.id);
   }
 

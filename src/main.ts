@@ -6,8 +6,8 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: 'https://teamboard-client.vercel.app', // <--- tu frontend en Vercel
-    credentials: true, // importante si usas cookies con OAuth
+    origin: ['http://localhost:5173', 'https://teamboard-client.vercel.app'],
+    credentials: true,
   });
   app.useGlobalPipes(
     new ValidationPipe({
