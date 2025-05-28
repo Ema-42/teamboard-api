@@ -43,7 +43,7 @@ model Role {
 model Board {
   id      String       @id @default(uuid())
   title   String
-  estado  String
+  estado  String?      @default("active")
   deleted Boolean      @default(false)
   ownerId String
   owner   User         @relation(name: "BoardOwner", fields: [ownerId], references: [id])
@@ -57,16 +57,14 @@ model Board {
 }
 
 model Tasks {
-  id          String    @id @default(uuid())
-  title       String
-  description String?
-  estado      String
-  deleted     Boolean   @default(false)
-  position    Int // Para orden dentro del grupo
-  color       String? // Color de la tarjeta
-  comments    String?
-  dueDate     DateTime?
-  check       Boolean   @default(false)
+  id       String    @id @default(uuid())
+  title    String
+  estado   String?   @default("active")
+  deleted  Boolean   @default(false)
+  position Int? // Para orden dentro del grupo
+  color    String? // Color de la tarjeta
+  dueDate  DateTime?
+  check    Boolean   @default(false)
 
   board    Board  @relation(fields: [board_id], references: [id])
   board_id String

@@ -25,9 +25,10 @@ export class BoardsController {
   findUserBoards(@CurrentUser() user: User) {
     return this.boardsService.findUserBoards(user.id);
   }
-
+  @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createBoardDto: CreateBoardDto) {
+    console.log('Creating board with data:', createBoardDto);
     return this.boardsService.create(createBoardDto);
   }
 
@@ -43,11 +44,13 @@ export class BoardsController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateBoardDto: UpdateBoardDto) {
-    return this.boardsService.update(+id, updateBoardDto);
+    return this.boardsService.update(id, updateBoardDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.boardsService.remove(+id);
+    console.log('Removing board with ID:', id);
+    
+    return this.boardsService.remove(id);
   }
 }

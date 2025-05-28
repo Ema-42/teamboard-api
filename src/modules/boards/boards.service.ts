@@ -10,8 +10,13 @@ export class BoardsService {
   async findUserBoards(ownerId: string) {
     try {
       const boards = await this.prisma.board.findMany({
-        where: { ownerId },
-        include: { tasks: true },
+        where: { ownerId, deleted: false },
+        include: {
+          tasks: {
+            where: { deleted: false },
+          },
+        },
+        orderBy: { createdAt: 'desc' },
       });
 
       if (!boards || boards.length === 0) {
@@ -39,8 +44,24 @@ export class BoardsService {
     }
   }
 
-  create(createBoardDto: CreateBoardDto) {
-    return 'This action adds a new board';
+  async create(createBoardDto: CreateBoardDto) {
+    try {
+      const board = await this.prisma.board.create({
+        data: createBoardDto,
+      });
+      return {
+        status: HttpStatus.CREATED,
+        data: board,
+      };
+    } catch (error) {
+      throw new HttpException(
+        {
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: 'An error occurred while creating the board',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   findAll() {
@@ -51,11 +72,45 @@ export class BoardsService {
     return `This action returns a #${id} board`;
   }
 
-  update(id: number, updateBoardDto: UpdateBoardDto) {
-    return `This action updates a #${id} board`;
+  async update(id: string, updateBoardDto: UpdateBoardDto) {
+    try {
+      const board = await this.prisma.board.update({
+        where: { id },
+        data: updateBoardDto,
+      });
+      return {
+        status: HttpStatus.OK,
+        data: board,
+      };
+    } catch (error) {
+      throw new HttpException(
+        {
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: 'An error occurred while updating the board',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} board`;
+  async remove(id: string) {
+    try {
+      const board = await this.prisma.board.update({
+        where: { id },
+        data: { deleted: true },
+      });
+      return {
+        status: HttpStatus.OK,
+        data: board,
+      };
+    } catch (error) {
+      throw new HttpException(
+        {
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: 'An error occurred while deleting the board',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }
