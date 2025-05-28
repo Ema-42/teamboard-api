@@ -21,7 +21,7 @@ import {
   
       try {
         const decoded = this.jwtService.verify(token);
-        request['user'] = decoded; // lo guardamos en request.user
+        request['user'] = decoded;
       } catch (error) {
         throw new UnauthorizedException('Token inválido o expirado');
       }
