@@ -28,7 +28,6 @@ export class BoardsController {
   @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createBoardDto: CreateBoardDto) {
-    console.log('Creating board with data:', createBoardDto);
     return this.boardsService.create(createBoardDto);
   }
 
