@@ -14,6 +14,7 @@ export class BoardsService {
         include: {
           tasks: {
             where: { deleted: false },
+            orderBy: { createdAt: 'asc' },
           },
         },
         orderBy: { createdAt: 'desc' },

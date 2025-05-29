@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import {
   IsString,
   IsOptional,
@@ -5,6 +6,7 @@ import {
   IsInt,
   IsUUID,
   IsDateString,
+  IsDate,
 } from 'class-validator';
 
 export class CreateTaskDto {
@@ -20,8 +22,9 @@ export class CreateTaskDto {
   color?: string;
 
   @IsOptional()
-  @IsDateString()
-  dueDate?: string;
+  @Transform(({ value }) => value ? new Date(value) : undefined)
+  @IsDate()
+  dueDate?: Date;
 
   @IsUUID()
   board_id: string;

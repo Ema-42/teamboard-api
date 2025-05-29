@@ -34,8 +34,6 @@ export class TasksService {
   }
 
   async update(id: string, updateTaskDto: UpdateTaskDto) {
-    console.log('Updating task with ID:', id, 'with data:', updateTaskDto);
-
     try {
       const updatedTask = await this.prisma.tasks.update({
         where: { id },
