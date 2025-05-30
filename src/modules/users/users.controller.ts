@@ -38,7 +38,7 @@ export class UsersController {
     return this.usersService.loginWithGoogle(jwt);
   }
 
-  @Get()
+  @Get('users')
   findAll() {
     return this.usersService.findAll();
   }

@@ -10,11 +10,35 @@ export class BoardsService {
   async findUserBoards(ownerId: string) {
     try {
       const boards = await this.prisma.board.findMany({
-        where: { ownerId, deleted: false },
+        where: {
+          deleted: false,
+          OR: [
+            { ownerId: ownerId },
+            {
+              members: {
+                some: {
+                  userId: ownerId,
+                  deleted: false,
+                },
+              },
+            },
+          ],
+        },
         include: {
           tasks: {
             where: { deleted: false },
             orderBy: { createdAt: 'asc' },
+          },
+          members: {
+            where: { deleted: false },
+            select: {
+              user: {
+                select: { id: true, name: true, email: true, picture: true },
+              },
+            },
+          },
+          owner: {
+            select: { id: true, name: true, email: true, picture: true },
           },
         },
         orderBy: { createdAt: 'desc' },
