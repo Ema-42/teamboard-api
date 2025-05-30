@@ -18,8 +18,14 @@ export class UsersService {
     private jwtService: JwtService,
   ) {}
 
-  findAll() {
-    return this.prisma.user.findMany({ where: { deleted: false } });
+  async findAll() {
+    const users = await this.prisma.user.findMany({
+      where: { deleted: false },
+    });
+    return {
+      status: 'success',
+      data: users,
+    };
   }
 
   async emailExists(email: string): Promise<boolean> {
