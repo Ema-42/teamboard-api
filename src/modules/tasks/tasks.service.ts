@@ -8,7 +8,6 @@ export class TasksService {
   constructor(private prisma: PrismaService) {}
 
   async create(createTaskDto: CreateTaskDto) {
-    console.log('llega', createTaskDto);
 
     try {
       const newTask = await this.prisma.tasks.create({

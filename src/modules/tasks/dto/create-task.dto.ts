@@ -22,7 +22,7 @@ export class CreateTaskDto {
   color?: string;
 
   @IsOptional()
-  @Transform(({ value }) => value ? new Date(value) : undefined)
+  @Transform(({ value }) => (value ? new Date(value) : undefined))
   @IsDate()
   dueDate?: Date;
 
@@ -35,4 +35,8 @@ export class CreateTaskDto {
 
   @IsUUID()
   created_by: string;
+
+  @IsOptional()
+  @IsBoolean()
+  check;
 }
