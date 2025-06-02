@@ -15,6 +15,7 @@ import { UpdateBoardDto } from './dto/update-board.dto';
 import { JwtAuthGuard } from '../users/guards/auth-guard.guard';
 import { CurrentUser } from 'src/modules/users/decorators/user-request.decorator';
 import { User } from 'src/modules/users/interfaces/user-token';
+import { UsersIdsDto } from './dto/users-ids.dto';
 
 @Controller('boards')
 export class BoardsController {
@@ -49,7 +50,16 @@ export class BoardsController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     console.log('Removing board with ID:', id);
-    
+
     return this.boardsService.remove(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/share')
+  async boardShare(
+    @Param('id') id: string,
+    @Body() usersIdsDto: UsersIdsDto
+  ) {
+    return this.boardsService.boardShare(id, usersIdsDto);
   }
 }

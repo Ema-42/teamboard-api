@@ -138,4 +138,44 @@ export class BoardsService {
       );
     }
   }
+
+  async boardShare(boardId: string, usersIdsDto: { usersIds: string[] }) {
+    try {
+      // Verificar que el board existe y no está eliminado
+      const board = await this.prisma.board.findUnique({
+        where: { id: boardId, deleted: false },
+      });
+      if (!board) {
+        throw new HttpException(
+          { status: HttpStatus.NOT_FOUND, message: 'Board not found' },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      // Insertar membresías
+      const memberships = await Promise.all(
+        usersIdsDto.usersIds.map(async (userId) => {
+          return this.prisma.membership.create({
+            data: {
+              userId,
+              boardId,
+              role: 'admin',
+              estado: 'active',
+            },
+          });
+        }),
+      );
+      return {
+        status: HttpStatus.CREATED,
+        data: memberships,
+      };
+    } catch (error) {
+      throw new HttpException(
+        {
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Error sharing board',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }
