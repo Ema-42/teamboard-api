@@ -11,17 +11,24 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=board-db
+    # ⭐ AÑADIDO: Healthcheck para verificar que PostgreSQL está listo
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d board-db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   #=================================
   teamboard-api:
     depends_on:
-      - board-db
-    container_name: teamboard-api
-    build: ./
+      board-db:
+        condition: service_healthy  # ⭐ MODIFICADO: Esperar a que la DB esté saludable
+    image: teamboard-api-prod
     ports:
-      - 3000:3000
-    volumes:
-      - ./src:/usr/src/app/src
-    command: npm run start:dev
+      - ${PORT}:${PORT}
+    build:
+      context: ./
+      dockerfile: dockerfile.prod
     environment:
       - PORT=${PORT}
       - DATABASE_URL=${DATABASE_URL_PROD}
