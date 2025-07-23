@@ -17,6 +17,8 @@ async function bootstrap() {
     }),
   );
   app.enableShutdownHooks();
+  console.log('Server in port: ', process.env.PORT ?? 3000);
+
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
