@@ -25,3 +25,5 @@ services:
     environment:
       - PORT=${PORT}
       - DATABASE_URL=${DATABASE_URL_PROD}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - SECRET_JWT=${SECRET_JWT}

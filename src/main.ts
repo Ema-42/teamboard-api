@@ -1,6 +1,5 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { PrismaService } from './modules/prisma/prisma.service';
 import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
@@ -17,7 +16,7 @@ async function bootstrap() {
     }),
   );
   app.enableShutdownHooks();
-  console.log('Server in port: ', process.env.PORT ?? 3000);
+  console.log('Server Running on port: ', process.env.PORT ?? 3000);
 
   await app.listen(process.env.PORT ?? 3000);
 }
