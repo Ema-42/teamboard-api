@@ -1,20 +1,40 @@
 steps:
   - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'bash'
     args:
-      [
-        'build',
-        '-t',
-        'southamerica-east1-docker.pkg.dev/teamboardnest/image-registry/teamboard-prod',
-        '-f',
-        'dockerfile.prod',
-        '--platform=linux/amd64',
-        '.',
-      ]
+      - -c
+      - |
+        docker build -t southamerica-east1-docker.pkg.dev/teamboardnest/image-registry/teamboard-prod \
+        -f dockerfile.prod \
+        --platform=linux/amd64 \
+        --build-arg DATABASE_URL=$$DATABASE_URL \
+        --build-arg PORT=$$PORT \
+        --build-arg GOOGLE_CLIENT_ID=$$GOOGLE_CLIENT_ID \
+        --build-arg SECRET_JWT=$$SECRET_JWT \
+        .
+    secretEnv:
+      - DATABASE_URL
+      - PORT
+      - GOOGLE_CLIENT_ID
+      - SECRET_JWT
+
   - name: 'gcr.io/cloud-builders/docker'
     args:
       [
         'push',
         'southamerica-east1-docker.pkg.dev/teamboardnest/image-registry/teamboard-prod',
       ]
+
+availableSecrets:
+  secretManager:
+    - versionName: projects/6554144236/secrets/DATABASE_URL/versions/1
+      env: DATABASE_URL
+    - versionName: projects/6554144236/secrets/PORT/versions/1
+      env: PORT
+    - versionName: projects/6554144236/secrets/GOOGLE_CLIENT_ID/versions/1
+      env: GOOGLE_CLIENT_ID
+    - versionName: projects/6554144236/secrets/SECRET_JWT/versions/1
+      env: SECRET_JWT
+
 options:
   logging: CLOUD_LOGGING_ONLY
