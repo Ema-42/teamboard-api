@@ -1,6 +1,27 @@
 #########dependencias
 FROM node:21-alpine3.19 as deps
 
+
+ARG DATABASE_URL
+ENV DATABASE_URL=$DATABASE_URL
+
+ARG PORT
+ENV PORT=$PORT
+
+ARG GOOGLE_CLIENT_ID
+ENV GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID
+
+ARG SECRET_JWT
+ENV SECRET_JWT=$SECRET_JWT
+
+#imprimir el arg para ver el valor
+RUN echo "ORDERS_DB_URL::: $ORDERS_DB_URL";
+RUN echo "DATABASE_URL::: $DATABASE_URL";
+RUN echo "PORT::: $PORT";
+RUN echo "GOOGLE_CLIENT_ID::: $GOOGLE_CLIENT_ID";
+RUN echo "SECRET_JWT::: $SECRET_JWT";
+
+
 WORKDIR /usr/src/app
 
 COPY package.json ./
