@@ -23,7 +23,7 @@ services:
     depends_on:
       board-db:
         condition: service_healthy  # ⭐ MODIFICADO: Esperar a que la DB esté saludable
-    image: teamboard-api-prod
+    image: southamerica-east1-docker.pkg.dev/teamboardnest/image-registry/teamboard-prod
     ports:
       - ${PORT}:${PORT}
     build:
@@ -32,3 +32,5 @@ services:
     environment:
       - PORT=${PORT}
       - DATABASE_URL=${DATABASE_URL_PROD}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - SECRET_JWT=${SECRET_JWT}

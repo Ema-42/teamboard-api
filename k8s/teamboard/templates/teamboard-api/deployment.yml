@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: teamboard-api
+  name: teamboard-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: teamboard-api
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: teamboard-api
+    spec:
+      containers:
+        - image: southamerica-east1-docker.pkg.dev/teamboardnest/image-registry/teamboard-prod
+          name: teamboard-prod
+          env:
+            - name: PORT
+              valueFrom:
+                secretKeyRef:
+                  name: teamboard-secrets
+                  key: PORT
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: teamboard-secrets
+                  key: DATABASE_URL
+            - name: GOOGLE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: teamboard-secrets
+                  key: GOOGLE_CLIENT_ID
+            - name: SECRET_JWT
+              valueFrom:
+                secretKeyRef:
+                  name: teamboard-secrets
+                  key: SECRET_JWT
+          resources: {}
+status: {}
